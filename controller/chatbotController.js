@@ -29,7 +29,6 @@ const pool = require('../database')
     // }
   
     if(responseData.entities =='pizza'){
-      // call the db ( "SELECT * FROM pizza")
       pool.query(`select * from pizza `, (error , result)=>{
         if(error) {
             return console.log(error) ; 
@@ -56,6 +55,17 @@ const pool = require('../database')
       res.send(responses);
     }
   };
+
+
+
+// function to execute the query with dynamic parameters
+async function getRowsByEntity(tableName, predicat) {
+  const query = `SELECT * FROM ${tableName} WHERE ${predicat} = ?`;
+  const [rows, fields] = await pool.query(query, [predicat]);
+  return rows;
+}
+
+
 
     module.exports = {traiterRequette} ; 
   
