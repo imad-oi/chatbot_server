@@ -65,7 +65,5 @@ async function getRowsByEntity(tableName, predicat) {
   return rows;
 }
 
-
-
     module.exports = {traiterRequette} ; 
   
