@@ -4,7 +4,7 @@ const pool = createPool({
     host:"localhost", 
     user :"root" ,
     password : "",
-    database : "dialogflow" , 
+    database : "chatbot" , 
     connectionLimit:12 
 }) ; 
 

@@ -46,14 +46,48 @@ const detectIntent = async (languageCode , queryText  , sessionId )=>{
     // send request and log result 
     const responses = await sessionClient.detectIntent(request) ;
     const result = responses[0].queryResult;
+
+    // get the intent name  
+    const intentName = result.intent.displayName ; 
+    // console.log("intent name :" , intentName) ; 
+
+    // get the entities names
     const fields = result.parameters.fields ; 
     const entities = Object.keys(fields);
-    console.log(entities);
+    // console.log('entities : ', entities);
+
+    // i created  an array to store the entiteis and their values 
+    const entitiesArray =[]; 
+    // get the value of entities 
+    for (const entity in fields) {
+
+      let value = '' ; 
+
+      if (fields.hasOwnProperty(entity)) {
+
+        if (fields[entity].listValue && fields[entity].listValue.values.length > 0) {
+          // extract values from a listValue entity
+          const listValues = fields[entity].listValue.values;
+          value = listValues.map(listValue => listValue.stringValue || listValue.numberValue).join(', ');
+        }
+        else{
+          const value = fields[entity].stringValue || fields[entity].numberValue || fields[entity].listValue ;
+        }
+        // console.log(entity + ': ' + value);
+        const ObjectEntity = { entity , value} ;  // create object ex : { 'semestre ' , 's1'} 
+        entitiesArray.push(ObjectEntity) ;        // add the object to entities's array 
+      }
+    }
+    // console.table(entitiesArray) ;
+    
     console.log(result.fulfillmentText ) ;  
   
+    // return the result : intent , entities , fulfillmentText 
     return{
       response: result.fulfillmentText, 
-      entities : entities
+      entities : entities  ,
+      intent : intentName , 
+      entitiesArray : entitiesArray 
     }
   } 
 
