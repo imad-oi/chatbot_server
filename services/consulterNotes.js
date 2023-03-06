@@ -1,4 +1,3 @@
-const { async } = require('@firebase/util');
 const pool = require('../database');
 
 async  function getNoteBySemestre(semestre, code_apoge){

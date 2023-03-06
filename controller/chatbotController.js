@@ -3,6 +3,7 @@ const consulterNote = require('../services/consulterNotes');
 const demanderRV = require('../services/demanderRV');
 const chercherFormations = require('../services/chercherFormations');
 const demanderAttInscription = require('../services/demanderAttInscription');
+const auth = require('../services/auth');
 const detectIntent = require('../services/dialogflow') ; 
 const pool = require('../database');
 
@@ -28,10 +29,33 @@ async function traiterRequette(req, res){
         entitiesArray : responseData.entitiesArray
     }
 
-     if(responseData.intent == 'login'){
-
-    }
-    else if(responseData.intent =='notes')
+     if(responseData.intent === 'login'){
+      const code_apoge = responseData.entitiesArray[0].value ;
+      if(code_apoge !== undefined){
+          auth.authentifier(code_apoge)
+          .then(data => {
+            const html = `<p>  ${data.prenomEtudiant} ${data.nomEtudiant} ,  comment je veux vous aidez ? </p>`
+            const responses = { 
+              entities : responseData.entities,
+              response : responseData.response ,
+              html : html
+              }
+              res.setHeader('Content-Type', 'text/html');
+              res.send(responses)
+          })
+          .catch(error => {
+            console.error(error);
+          });
+        }else{
+          const responses = { 
+            entities : responseData.entities,
+            response : 'il est possible que votre code apoge n est pas correct !!' ,
+            }
+          res.send(responses)
+        }
+      // console.log("nom from login : ",result)  ; 
+      }
+    else if(responseData.intent === 'notes')
     {
       console.table(responseData.entitiesArray);
       if(
@@ -61,6 +85,7 @@ async function traiterRequette(req, res){
       }
     }
     else{
+      res.setHeader('Content-Type', 'text/html');
       res.send(responses);
     }
   };
