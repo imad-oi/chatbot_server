@@ -21,10 +21,9 @@ app.get("/" , (req , res)=>{
 app.get('/download-pdf', (req, res) => {
     // create a new PDF document
     const doc = new PDFDocument();
-  
+
     // set the PDF document's title
     doc.info.Title = 'My PDF Document';
-  
     // write some text to the PDF document
     doc.text('Hello, world!');
   

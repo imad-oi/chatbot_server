@@ -13,85 +13,113 @@ async function traiterRequette(req, res){
     let languageCode = req.body.languageCode;
     let queryText = req.body.queryText;
     let sessionId = req.body.sessionId;
+    // let code_apoge  ;
+
+    let responses = { 
+      intent : '' , 
+      entities : '',
+      response : '',
+      entitiesArray : ''
+        }
 
     var responseData = await detectIntent(languageCode, queryText, sessionId , previousContexts);
-    console.log( "context  : : : :  : ", responseData.context) ; 
-    if(responseData.context){
-      previousContexts.push(responseData.context);
-    }
+
     console.log(responseData);
     console.table(responseData.entitiesArray);
-    // i created an object to store all the data returned from dialogflow
-    const responses = { 
+    // i created an object to store all the data returned from dialogflow , and it will be sent to front end if no service is called
+     responses = { 
         intent : responseData.intent , 
         entities : responseData.entities,
         response : responseData.response,
         entitiesArray : responseData.entitiesArray
-    }
+          }
+
+    // ###########################################" login " ########################################""
 
      if(responseData.intent === 'login'){
-      const code_apoge = responseData.entitiesArray[0].value ;
-      if(code_apoge !== undefined){
-          auth.authentifier(code_apoge)
-          .then(data => {
-            if(data.nomEtudiant != undefined && data.prenomEtudiant != undefined){
-              const html = `<p>  ${data.prenomEtudiant} ${data.nomEtudiant} ,  comment je veux vous aidez ? </p>`
-              const responses = { 
-                entities : responseData.entities,
-                response : responseData.response ,
-                html : html
-              }
-              res.setHeader('Content-Type', 'text/html');
-              res.send(responses)
+      console.table( 'logggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiin' , responseData.entities)
+       code_apoge = responseData.entitiesArray[0].value ;
+       process.env.CODE_APOGE = code_apoge ;  
+          if(code_apoge !== undefined){
+              auth.authentifier(code_apoge)
+              .then(data => {
+                    if(data.nomEtudiant != undefined && data.prenomEtudiant != undefined){
+                      const html = `<p>  ${data.prenomEtudiant} ${data.nomEtudiant} ,  comment je veux vous aidez ? </p>`
+                       responses = { 
+                        entities : responseData.entities,
+                        response : responseData.response ,
+                        html : html
+                      }
+                      res.setHeader('Content-Type', 'text/html');
+                      res.send(responses)
+                    }
+                    else{
+                        responses={
+                          response : ' votre code apoge n\'est pas correct '
+                      }
+                      res.send(responses)
+                    }
+              })
+              .catch(error => {
+                console.error('erroooooooooooooooooooooooooooor',error);
+              });
+                }else{
+                    responses = { 
+                      entities : responseData.entities,
+                      response : 'il est possible que votre code apoge n\'est pas correct !!' ,
+                    }
+                  res.send(responses)
             }
-            else{
-              const responses={
-                response : ' votre code apoge n est pas correct '
-              }
-              res.send(responses)
-
-            }
-          })
-          .catch(error => {
-            console.error('erroooooooooooooooooooooooooooor',error);
-          });
-        }else{
-          const responses = { 
-            entities : responseData.entities,
-            response : 'il est possible que votre code apoge n est pas correct !!' ,
-            }
-          res.send(responses)
-        }
       }
-    else if(responseData.intent === 'notes')
-    {
-      console.table(responseData.entitiesArray);
-      if(
-        responseData.entitiesArray[0].entity ==='semestre' || 
-        responseData.entitiesArray[1].entity ==='semestre' )
-      {
-        const sm =  responseData.entitiesArray[0].value  || responseData.entitiesArray[1].value  ; 
-        const code = '11111' ; 
-        const query = `SELECT note FROM note_semestre where code_apoge=${code} and nom_sm='${sm}' ` ; 
-        pool.query(query ,  async (error , result)=>{
-        if(error){ 
-        return console.log(error) ; 
-        }
-        const rowDataPacket = result[0]; // accéder au premier élément du tableau retourné
-        const valeurNote = rowDataPacket?.note; // accéder à la propriété "note"
-        console.log(" valeur note : ",valeurNote); 
-
-        const codeHtml = `<p>${valeurNote}</p>` ; 
-        const responses = { 
-          entities : responseData.entities,
-          response : responseData.response ,
-          html : codeHtml
+      else if(responseData.intent === 'recuperer_semestre'){
+        const code = process.env.CODE_APOGE ; 
+          if(code == undefined )
+          {
+            responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
+            console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
+            res.send(responses) ; 
+            return -1 ; 
+           }
+          else{
+            const semestre = responseData.entitiesArray[0].value ; 
+            // console.log("code apoge from controller :" , code) ; 
+            consulterNote.getNoteBySemestre(semestre , code)
+            .then((data)=>{
+              console.log( 'data  recuper from  semestre  : : ', data);
+              if(data !== undefined){
+              const html = `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
+              responses = { 
+               entities : responseData.entities,
+               response : responseData.response ,
+               html : html
+             }
+             res.setHeader('Content-Type', 'text/html');
+             res.send(responses)
+               }
+               else{
+                console.log("############################################# le cas ou data est undefined en semestre" )
+                consulterNote.getAllSemestre(code)
+                .then((data)=>{
+                  console.log('data of all sm : ',  data) ; 
+                  let html = `<p>le semestre que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
+                  data.forEach(sm => {
+                    html += `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${sm.nom_sm}</span> </p>`;
+                  });
+                  responses = { 
+                    html : html
+                  }
+                  res.setHeader('Content-Type', 'text/html');
+                  res.send(responses)
+                })
+               }
+            })
+            .catch((error)=>{
+              console.log(error); 
+            })
           }
-          res.setHeader('Content-Type', 'text/html');
-          res.send(responses)
-      })
       }
-    }
+
+                   // if nooo service is called 
     else{
       res.setHeader('Content-Type', 'text/html');
       res.send(responses);
