@@ -3,12 +3,12 @@ const router = express.Router();
 
 const {traiterRequette} = require('../controller/chatbotController');
 
-const middleWare = ( req , res , next)=>{
-    console.log("imad ") ; 
-    next() ; 
-}
+// const middleWare = ( req , res , next)=>{
+//     console.log("imad ") ; 
+//     next() ; 
+// }
 
-router.post('/api/chatbot', middleWare, ( req, res)=>{
+router.post('/api/chatbot', ( req, res)=>{
     traiterRequette(req, res) ; 
 });
 
