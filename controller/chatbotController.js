@@ -34,17 +34,26 @@ async function traiterRequette(req, res){
       if(code_apoge !== undefined){
           auth.authentifier(code_apoge)
           .then(data => {
-            const html = `<p>  ${data.prenomEtudiant} ${data.nomEtudiant} ,  comment je veux vous aidez ? </p>`
-            const responses = { 
-              entities : responseData.entities,
-              response : responseData.response ,
-              html : html
+            if(data.nomEtudiant != undefined && data.prenomEtudiant != undefined){
+              const html = `<p>  ${data.prenomEtudiant} ${data.nomEtudiant} ,  comment je veux vous aidez ? </p>`
+              const responses = { 
+                entities : responseData.entities,
+                response : responseData.response ,
+                html : html
               }
               res.setHeader('Content-Type', 'text/html');
               res.send(responses)
+            }
+            else{
+              const responses={
+                response : ' votre code apoge n est pas correct '
+              }
+              res.send(responses)
+
+            }
           })
           .catch(error => {
-            console.error(error);
+            console.error('erroooooooooooooooooooooooooooor',error);
           });
         }else{
           const responses = { 
@@ -53,7 +62,6 @@ async function traiterRequette(req, res){
             }
           res.send(responses)
         }
-      // console.log("nom from login : ",result)  ; 
       }
     else if(responseData.intent === 'notes')
     {

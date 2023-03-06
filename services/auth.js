@@ -8,7 +8,7 @@ async function authentifier(code_apoge) {
       if (error) {
         reject(error);
       } else {
-        console.log(result)
+        console.log("result of auth",result)
         const rowDataPacket = result[0];
         const nomEtudiant = rowDataPacket?.nom;
         const prenomEtudiant = rowDataPacket?.prenom;
