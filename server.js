@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 app.use(router)
 
 app.get("/" , (req , res)=>{
-    // res.status(200).send({
-    //     message:"hello from server"
-    // }) ; 
-    res.sendFile(path.join(__dirname+'/pdf.html'))
+    res.status(200).send({
+        message:"hello from server"
+    }) ; 
+    // res.sendFile(path.join(__dirname+'/index.html'))
 })
 
 app.get('/download-pdf', (req, res) => {

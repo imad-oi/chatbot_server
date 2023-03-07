@@ -35,7 +35,6 @@ async function traiterRequette(req, res){
           }
 
     // ###########################################" login " ########################################""
-
      if(responseData.intent === 'login'){
       console.table( 'logggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiin' , responseData.entities)
        code_apoge = responseData.entitiesArray[0].value ;
@@ -71,6 +70,7 @@ async function traiterRequette(req, res){
                   res.send(responses)
             }
       }
+       // ###########################################" semestre  " ########################################""
       else if(responseData.intent === 'recuperer_semestre'){
         const code = process.env.CODE_APOGE ; 
           if(code == undefined )
@@ -103,7 +103,55 @@ async function traiterRequette(req, res){
                   console.log('data of all sm : ',  data) ; 
                   let html = `<p>le semestre que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
                   data.forEach(sm => {
-                    html += `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${sm.nom_sm}</span> </p>`;
+                    html += `<p><span style="border:4px solid black ;  border-radius:15px  ; ">${sm.nom_sm}</span> </p>`;
+                  });
+                  responses = { 
+                    html : html
+                  }
+                  res.setHeader('Content-Type', 'text/html');
+                  res.send(responses)
+                })
+               }
+            })
+            .catch((error)=>{
+              console.log(error); 
+            })
+          }
+      }
+       // ###########################################" module " ########################################""
+       else if(responseData.intent === 'recuperer_module'){
+        const code = process.env.CODE_APOGE ; 
+          if(code == undefined )
+          {
+            responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
+            console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
+            res.send(responses) ; 
+            return -1 ; 
+           }
+          else{
+            const module = responseData.entitiesArray[0].value ; 
+            // console.log("code apoge from controller :" , code) ; 
+            consulterNote.getNoteByModule(module , code)
+            .then((data)=>{
+              console.log( 'data  recuper from  module   : : ', data);
+              if(data !== undefined){
+              const html = `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
+              responses = { 
+               entities : responseData.entities,
+               response : responseData.response ,
+               html : html
+             }
+             res.setHeader('Content-Type', 'text/html');
+             res.send(responses)
+               }
+               else{
+                console.log("############################################# le cas ou data est undefined en module" )
+                consulterNote.getAllModules(code)
+                .then((data)=>{
+                  console.log('data of all modules : ',  data) ; 
+                  let html = `<p>le module que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
+                  data.forEach(module => {
+                    html += `<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${module.nom_md}</span> </p>`;
                   });
                   responses = { 
                     html : html
