@@ -35,7 +35,7 @@ async function traiterRequette(req, res){
           }
 
     // ###########################################" login " ########################################""
-     if(responseData.intent === 'login'){
+     /* if(responseData.intent === 'login'){
       console.table( 'logggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiin' , responseData.entities)
        code_apoge = responseData.entitiesArray[0].value ;
        process.env.CODE_APOGE = code_apoge ;  
@@ -166,12 +166,12 @@ async function traiterRequette(req, res){
             })
           }
       }
-
+ */
                    // if nooo service is called 
-    else{
+  // else{
       res.setHeader('Content-Type', 'text/html');
       res.send(responses);
-    }
+   // } 
   };
   module.exports = {traiterRequette} ; 
   
