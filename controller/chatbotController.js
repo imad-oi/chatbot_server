@@ -7,26 +7,24 @@ const auth = require('../services/auth');
 const detectIntent = require('../services/dialogflow') ; 
 const pool = require('../database');
 
-const previousContexts =[] ; 
 async function traiterRequette(req, res){
-   console.log("enter de controller  : " , previousContexts) ; 
     let languageCode = req.body.languageCode;
     let queryText = req.body.queryText;
     let sessionId = req.body.sessionId;
-    // let code_apoge  ;
 
     let responses = { 
       intent : '' , 
       entities : '',
       response : '',
-      entitiesArray : ''
+      entitiesArray : '', 
+      nom : ''
         }
 
-    var responseData = await detectIntent(languageCode, queryText, sessionId , previousContexts);
+    var responseData = await detectIntent(languageCode, queryText, sessionId );
 
     console.log(responseData);
     console.table(responseData.entitiesArray);
-    // i created an object to store all the data returned from dialogflow , and it will be sent to front end if no service is called
+    // i created an object to store all the data returned from dialogflow , and it will be sent to front-end if no service is called
      responses = { 
         intent : responseData.intent , 
         entities : responseData.entities,
@@ -38,17 +36,22 @@ async function traiterRequette(req, res){
      /* if(responseData.intent === 'login'){
       console.table( 'logggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiin' , responseData.entities)
        code_apoge = responseData.entitiesArray[0].value ;
-       process.env.CODE_APOGE = code_apoge ;  
+       process.env.CODE_APOGE = code_apoge ;
           if(code_apoge !== undefined){
               auth.authentifier(code_apoge)
               .then(data => {
+                 // if user's code apoge exist in db
                     if(data.nomEtudiant != undefined && data.prenomEtudiant != undefined){
-                      const html = `<p>  ${data.prenomEtudiant} ${data.nomEtudiant} ,  comment je veux vous aidez ? </p>`
+                      const nom = data.nomEtudiant + ' ' +data.prenomEtudiant   ; 
+
+                      const html = `<p>  ${data.prenomEtudiant} ${data.nomEtudiant} , comment je veux vous aidez ? </p>`;
                        responses = { 
                         entities : responseData.entities,
                         response : responseData.response ,
-                        html : html
+                        html : html , 
+                        nom : nom 
                       }
+
                       res.setHeader('Content-Type', 'text/html');
                       res.send(responses)
                     }
@@ -56,6 +59,7 @@ async function traiterRequette(req, res){
                         responses={
                           response : ' votre code apoge n\'est pas correct '
                       }
+                      // return de la fonction 
                       res.send(responses)
                     }
               })
@@ -78,7 +82,7 @@ async function traiterRequette(req, res){
             responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
             console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
             res.send(responses) ; 
-            return -1 ; 
+            return -1 ;
            }
           else{
             const semestre = responseData.entitiesArray[0].value ; 

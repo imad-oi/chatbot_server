@@ -11,6 +11,7 @@ const CREDENTIALS = {"type": "service_account",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/chatbot-bot%40chatbot-auds.iam.gserviceaccount.com"
   }
+  
 const projectId  = CREDENTIALS.project_id ; 
 const configuration  = {credentials : { private_key: CREDENTIALS['private_key'],  client_email:CREDENTIALS['client_email']}}
 const sessionClient = new dialogflow.SessionsClient(configuration) ; 

@@ -14,8 +14,8 @@ app.use(router)
 app.get("/" , (req , res)=>{
     res.status(200).send({
         message:"hello from server"
-    }) ; 
-    // res.sendFile(path.join(__dirname+'/index.html'))
+    }) ;
+    // res.sendFile(path.join(__dirname+'/pdf.html'))
 })
 
 app.get('/download-pdf', (req, res) => {
