@@ -9,17 +9,7 @@ async function cycleDispo() {
         reject(error);
       } else {
         const rowDataPacket = result;
-/*         console.log(typeof result);
- */
-       // let cycles = [  rowDataPacket[0].cycle , 
-       //                 rowDataPacket[1].cycle ,
-       //                 rowDataPacket[2].cycle ,
-       //                 rowDataPacket[3].cycle
-       //               ];
-/*         console.log(cycles);
- */        //console.log(rowDataPacket[0].cycle);
-        //console.log(rowDataPacket[3].cycle);
-        resolve({rowDataPacket} );
+        resolve(rowDataPacket );
       }
     });
   });
@@ -29,20 +19,21 @@ cycleDispo();
 async function formationDispo(cycle) {
   /* const typecycle = cycle; */
   return new Promise((resolve, reject) => {
-    pool.query(`SELECT nom,link FROM formation where cycle='licence'`, (error, result) => {
+    pool.query(`SELECT nom, lien FROM formation where cycle='${cycle}'`, (error, result) => {
       if (error) {
         reject(error);
       } else {
-        //console.log("result of formation",result)//test
+
+        console.log('27',result);
         const rowDataPacket = result;
-        //const nomFormation = rowDataPacket.nom;
-        //const linkFormation = rowDataPacket.link;
-        resolve({rowDataPacket} );
+        const nomFormation = rowDataPacket.nom;
+        const linkFormation = rowDataPacket.lien;
+        resolve(result);
       }
     });
   });
 }
-formationDispo();
+
 
 module.exports = {
     formationDispo ,cycleDispo,

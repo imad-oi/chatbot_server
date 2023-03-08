@@ -14,19 +14,19 @@ async function traiterRequette(req, res){
 
     let responses = { 
       intent : '' , 
-      entities : '',
+      entities : '', 
       response : '',
       entitiesArray : '', 
       nom : ''
         }
 
      //   var responseData = await detectIntent(languageCode, queryText, sessionId );
-        var responseData = await detectIntent('fr', queryText, sessionId );
-        c
+        var responseData = await detectIntent(languageCode, queryText, sessionId );
+        
     console.log(responseData);
     console.log('ici responseData');
     console.table(responseData.entitiesArray);
-    console.table('ici responseData.entitiesArray');
+    console.log('ici responseData.entitiesArray');
     // i created an object to store all the data returned from dialogflow , and it will be sent to front-end if no service is called
      responses = { 
         intent : responseData.intent , 
@@ -125,10 +125,6 @@ async function traiterRequette(req, res){
             })
           }
       }
-
-
-
-
        // ###########################################" module " ########################################""
        else if(responseData.intent === 'recuperer_module'){
         const code = process.env.CODE_APOGE ; 
@@ -178,8 +174,9 @@ async function traiterRequette(req, res){
           }
 
 
-//########################cycle disponaible##################################
-      }else  if(responseData.intent === 'Consulterformation'){
+//########################  cycle disponaible    ##################################
+      }
+      else  if(responseData.intent === 'Consulterformation'){
         const code = process.env.CODE_APOGE ; 
         if(code === undefined){
           responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
@@ -189,8 +186,8 @@ async function traiterRequette(req, res){
         }else{
           chercherFormations.cycleDispo()
           .then((data)=>{
-            console.log(data);
-              const html=`<p>voici les differents cycles : </p>`
+            console.log("189",data, typeof data);
+              let html=`<p>voici les differents cycles : </p>`
               data.forEach(cycle =>{
                 console.log('here is test');
                 console.log(cycle.cycle);
@@ -202,11 +199,14 @@ async function traiterRequette(req, res){
               res.setHeader('Content-Type', 'text/html');
               res.send(responses)
           })
-        .catch((error)=>{
-          console.log(error); 
+            .catch((error)=>{
+              console.log(error); 
         })
         }
-      }else if(responseData.intent === 'type_de_formation'){
+      }
+      // #######################################################" type formation #####################################"""
+      else if(responseData.intent === 'type_de_formation'){
+
         const code = process.env.CODE_APOGE ; 
         const cycle = responseData.entitiesArray[0].value ;
         console.log('heeeeeeeeeeeeeeeeeeeeeeeererere',cycle)
@@ -216,13 +216,21 @@ async function traiterRequette(req, res){
           res.send(responses) ; 
           return -1 ;
         }else{
-          chercherFormations.formationDispo('master')
+          chercherFormations.formationDispo(cycle)
           .then((data)=>{
-            console.log(data);
-          })
-        .catch((error)=>{
-          console.log(error); 
-        })
+            console.log('221',data); //
+            console.log('data of all modules : ',  data) ; 
+                  let html = `<p>voici les formation correspondants disponibles : </p>`;
+                  data.forEach(cycle => {
+                    // html += `<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${cycle}</span> </p>`;
+                    html+=`<a  href="${cycle.lien}" >${cycle.nom}</a>` ; 
+                  });
+                  responses = { 
+                    html : html
+                  }
+                  res.setHeader('Content-Type', 'text/html');
+                  res.send(responses)
+                })
         }
       }
       else{
