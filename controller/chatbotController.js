@@ -20,10 +20,13 @@ async function traiterRequette(req, res){
       nom : ''
         }
 
-    var responseData = await detectIntent(languageCode, queryText, sessionId );
-
+     //   var responseData = await detectIntent(languageCode, queryText, sessionId );
+        var responseData = await detectIntent('fr', queryText, sessionId );
+        c
     console.log(responseData);
+    console.log('ici responseData');
     console.table(responseData.entitiesArray);
+    console.table('ici responseData.entitiesArray');
     // i created an object to store all the data returned from dialogflow , and it will be sent to front-end if no service is called
      responses = { 
         intent : responseData.intent , 
@@ -33,7 +36,7 @@ async function traiterRequette(req, res){
           }
 
     // ###########################################" login " ########################################""
-     /* if(responseData.intent === 'login'){
+     if(responseData.intent === 'login'){
       console.table( 'logggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiin' , responseData.entities)
        code_apoge = responseData.entitiesArray[0].value ;
        process.env.CODE_APOGE = code_apoge ;
@@ -122,6 +125,10 @@ async function traiterRequette(req, res){
             })
           }
       }
+
+
+
+
        // ###########################################" module " ########################################""
        else if(responseData.intent === 'recuperer_module'){
         const code = process.env.CODE_APOGE ; 
@@ -169,13 +176,64 @@ async function traiterRequette(req, res){
               console.log(error); 
             })
           }
+
+
+//########################cycle disponaible##################################
+      }else  if(responseData.intent === 'Consulterformation'){
+        const code = process.env.CODE_APOGE ; 
+        if(code === undefined){
+          responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
+          console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
+          res.send(responses) ; 
+          return -1 ;
+        }else{
+          chercherFormations.cycleDispo()
+          .then((data)=>{
+            console.log(data);
+              const html=`<p>voici les differents cycles : </p>`
+              data.forEach(cycle =>{
+                console.log('here is test');
+                console.log(cycle.cycle);
+                html +=`<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${cycle.cycle}</span> </p>`;
+              });
+              responses ={
+                html : html
+              }
+              res.setHeader('Content-Type', 'text/html');
+              res.send(responses)
+          })
+        .catch((error)=>{
+          console.log(error); 
+        })
+        }
+      }else if(responseData.intent === 'type_de_formation'){
+        const code = process.env.CODE_APOGE ; 
+        const cycle = responseData.entitiesArray[0].value ;
+        console.log('heeeeeeeeeeeeeeeeeeeeeeeererere',cycle)
+        if(code === undefined){
+          responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
+          console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
+          res.send(responses) ; 
+          return -1 ;
+        }else{
+          chercherFormations.formationDispo('master')
+          .then((data)=>{
+            console.log(data);
+          })
+        .catch((error)=>{
+          console.log(error); 
+        })
+        }
       }
- */
+      else{
                    // if nooo service is called 
-  // else{
-      res.setHeader('Content-Type', 'text/html');
-      res.send(responses);
-   // } 
-  };
+                    res.setHeader('Content-Type', 'text/html');
+                    res.send(responses);
+                    
+                    console.log('ici responses');
+      }
+
+    };  //fin traiter requete
+
   module.exports = {traiterRequette} ; 
   

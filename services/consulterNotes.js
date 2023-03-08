@@ -1,7 +1,8 @@
 const pool = require('../database');
 
 async  function getNoteBySemestre(semestre, code_apoge){
-  const code = code_apoge  ; const sm = semestre ;
+  const code = code_apoge  ; 
+  const sm = semestre ;
   return new Promise((resolve, reject) => {
     pool.query(`SELECT note FROM note_semestre where code_apoge=${code} and nom_sm='${sm}'`, (error, result) => {
       if (error) {
