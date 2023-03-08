@@ -139,7 +139,7 @@ async function traiterRequette(req, res){
             .then((data)=>{
               console.log( 'data  recuper from  module   : : ', data);
               if(data !== undefined){
-              const html = `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
+              const html = `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${data}</span> <a href="http://www.fstg-marrakech.ac.ma/FST/fichiers/LST-SIR.pdf" >click</a>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
               responses = { 
                entities : responseData.entities,
                response : responseData.response ,
