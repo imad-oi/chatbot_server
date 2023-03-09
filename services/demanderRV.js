@@ -1,5 +1,4 @@
 const pool = require("../database");
-/*
 const id = Math.random() * (10000 - 1) + 1; //generate id
 async function sauvgarderRendezVous(codeApoge, sujetRv) {
   return new Promise((resolve, reject) => {
@@ -21,8 +20,8 @@ async function sauvgarderRendezVous(codeApoge, sujetRv) {
 }
 
 sauvgarderRendezVous();
-*/
-async function afficherRendezVous(codeApoge, id) {
+
+async function afficherRendezVous(codeApoge) {
   return new Promise((resolve, reject) => {
     const id = Math.random() * (10000 - 1) + 1; //generate id
     console.log("3aaa", id);
@@ -42,9 +41,8 @@ async function afficherRendezVous(codeApoge, id) {
 }
 
 afficherRendezVous();
-//sauvgarderRendezVous,
 module.exports = {
-  afficherRendezVous,
+  afficherRendezVous,sauvgarderRendezVous,
 };
 // user  : je veux demander un RV , rv , intent : demander_rv
 // bot  : avec plisair, voici les sujets disponible [ static ] , que vous prefere ?
