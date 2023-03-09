@@ -54,7 +54,6 @@ async function traiterRequette(req, res){
                         html : html , 
                         nom : nom 
                       }
-
                       res.setHeader('Content-Type', 'text/html');
                       res.send(responses)
                     }
@@ -94,7 +93,7 @@ async function traiterRequette(req, res){
             .then((data)=>{
               console.log( 'data  recuper from  semestre  : : ', data);
               if(data !== undefined){
-              const html = `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
+              const html = `<p><span class="rounded bg-light w-29 text-dark p-1 m-2 ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
               responses = { 
                entities : responseData.entities,
                response : responseData.response ,
@@ -110,7 +109,7 @@ async function traiterRequette(req, res){
                   console.log('data of all sm : ',  data) ; 
                   let html = `<p>le semestre que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
                   data.forEach(sm => {
-                    html += `<p><span style="border:4px solid black ;  border-radius:15px  ; ">${sm.nom_sm}</span> </p>`;
+                    html += `<span class="rounded bg-light w-29 text-dark p-1 m-2 ">${sm.nom_sm}</span> `;
                   });
                   responses = { 
                     html : html
@@ -142,7 +141,7 @@ async function traiterRequette(req, res){
             .then((data)=>{
               console.log( 'data  recuper from  module   : : ', data);
               if(data !== undefined){
-              const html = `<p><span style="font-weight: bolder;font-size: 24px;border:4px solid black ; padding  : 0 15px ; border-radius:15px  ;margin: 4px 0 4px 20px ">${data}</span> <a href="http://www.fstg-marrakech.ac.ma/FST/fichiers/LST-SIR.pdf" >click</a>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
+              const html = `<p><span class="rounded p-1 m-2 text-dark bg-light">${data}</span> </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
               responses = { 
                entities : responseData.entities,
                response : responseData.response ,
@@ -158,7 +157,7 @@ async function traiterRequette(req, res){
                   console.log('data of all modules : ',  data) ; 
                   let html = `<p>le module que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
                   data.forEach(module => {
-                    html += `<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${module.nom_md}</span> </p>`;
+                    html += `<p><span class=" rounded bg-light w-29 text-dark p-1 m-2 " >${module.nom_md}</span> </p>`;
                   });
                   responses = { 
                     html : html
@@ -223,7 +222,8 @@ async function traiterRequette(req, res){
                   let html = `<p>voici les formation correspondants disponibles : </p>`;
                   data.forEach(cycle => {
                     // html += `<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${cycle}</span> </p>`;
-                    html+=`<a  href="${cycle.lien}" >${cycle.nom}</a>` ; 
+                    // html+=`<a style="color: black;  background-color: white ; border: 1px solid black; border-redius:6px ; margin : 4px  "  href="${cycle.lien}" >${cycle.nom}</a>` ; 
+                    html += `<a target="_blank" class="nav-link rounded border bg-light text-dark m-2 p-1 text-center"  aria-disabled="false" href="${cycle.lien}">${cycle.nom}</a>`;
                   });
                   responses = { 
                     html : html

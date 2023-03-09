@@ -12,4 +12,10 @@ router.post('/api/chatbot', ( req, res)=>{
     traiterRequette(req, res) ; 
 });
 
+router.post('/api/transcribe', (req, res)=>{
+    let data = req.body ; 
+    console.log(data) ; 
+    res.send('bien recu');
+})
+
 module.exports = router ; 
