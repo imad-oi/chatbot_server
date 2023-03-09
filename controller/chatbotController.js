@@ -2,7 +2,6 @@
 const consulterNote = require('../services/consulterNotes');
 const demanderRV = require('../services/demanderRV');
 const chercherFormations = require('../services/chercherFormations');
-const demanderAttInscription = require('../services/demanderAttInscription');
 const auth = require('../services/auth');
 const detectIntent = require('../services/dialogflow') ; 
 const pool = require('../database');
@@ -197,6 +196,7 @@ async function traiterRequette(req, res){
               }
               res.setHeader('Content-Type', 'text/html');
               res.send(responses)
+              console.log('01',responses);
           })
             .catch((error)=>{
               console.log(error); 
@@ -232,6 +232,43 @@ async function traiterRequette(req, res){
                   res.send(responses)
                 })
         }
+      }else if(responseData.intent === 'typeDiplomeRv') {
+        const code = process.env.CODE_APOGE ; 
+        const sujet = responseData.entitiesArray[0].value ;
+        if(code == undefined )
+        {
+          responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
+          console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
+          res.send(responses) ; 
+          return -1 ;
+         }else{
+          //il faut utiliser la fct de service auth pour extraire le nom et prenom d'etudiant 
+          // qui demende le rendez vous
+          demanderRV.sauvgarderRendezVous(codeapoge,sujet);
+          demanderRV.afficherRendezVous(codeapoge)
+          .then((data)=>{
+            console.log('123',data);
+            let html = `<p>votre Rendez Vous est enregistrer.</p><br>
+            <p>nom et prenom : ${etudiant.nom} ${etudiant.nom} </p> <br>
+            <p>sujet : retirer de ${data.sujet}</p> <br>
+            <p>date : ${data.date}</p> <br>
+            `;//faut creer un table dans la base donne 
+            /* create table renderVou (
+                id numeric(10)not null unique,
+                sujet varachar(30),code_apoge_fk varchar(20),
+                PRIMERY KEY (id) ,
+                FOREIGN KEY (code_apoge_fk) REFERENCES etudiant(code_apoge)
+                );
+    */
+            responses = { 
+              html : html
+            }
+            res.setHeader('Content-Type', 'text/html');
+            res.send(responses)
+
+          })
+         }
+
       }
       else{
                    // if nooo service is called 
