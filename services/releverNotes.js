@@ -1,6 +1,5 @@
 const pool = require('../database')
 
-
 async  function getNoteAndModulesOfSemestre(semestre, code_apoge){
   const code = code_apoge  ; 
   const sm = semestre ;
@@ -19,13 +18,4 @@ async  function getNoteAndModulesOfSemestre(semestre, code_apoge){
 getNoteAndModulesOfSemestre('s1', '1234567') ; 
 
 
-   async function generatePdf(data ){
-      return data ; 
-    }
-
-
-
-
-
-
-  module.exports = { getNoteAndModulesOfSemestre , generatePdf} ; 
+  module.exports = { getNoteAndModulesOfSemestre } ; 

@@ -22,13 +22,8 @@ async function traiterRequette(req, res){
       nom : '', 
         }
 
-     //   var responseData = await detectIntent(languageCode, queryText, sessionId );
         var responseData = await detectIntent(languageCode, queryText, sessionId );
         
-    console.log(responseData);
-    console.log('ici responseData');
-    console.table(responseData.entitiesArray);
-    console.log('ici responseData.entitiesArray');
     // i created an object to store all the data returned from dialogflow , and it will be sent to front-end if no service is called
      responses = { 
         intent : responseData.intent , 
@@ -62,12 +57,11 @@ async function traiterRequette(req, res){
                         responses={
                           response : ' votre code apoge n\'est pas correct '
                       }
-                      // return de la fonction 
                       res.send(responses)
                     }
               })
               .catch(error => {
-                console.error('erroooooooooooooooooooooooooooor',error);
+                console.error(error);
               });
                 }else{
                     responses = { 
@@ -83,16 +77,13 @@ async function traiterRequette(req, res){
           if(code == undefined )
           {
             responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
-            console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
             res.send(responses) ; 
             return -1 ;
            }
           else{
             const semestre = responseData.entitiesArray[0].value ; 
-            // console.log("code apoge from controller :" , code) ; 
             consulterNote.getNoteBySemestre(semestre , code)
             .then((data)=>{
-              console.log( 'data  recuper from  semestre  : : ', data);
               if(data !== undefined){
               const html = `<p><span class="rounded bg-light w-29 text-dark p-1 m-2 ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
               responses = { 
@@ -104,10 +95,8 @@ async function traiterRequette(req, res){
              res.send(responses)
                }
                else{
-                console.log("############################################# le cas ou data est undefined en semestre" )
                 consulterNote.getAllSemestre(code)
                 .then((data)=>{
-                  console.log('data of all sm : ',  data) ; 
                   let html = `<p>le semestre que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
                   data.forEach(sm => {
                     html += `<span class="rounded bg-light w-29 text-dark p-1 m-2 ">${sm.nom_sm}</span> `;
@@ -131,16 +120,13 @@ async function traiterRequette(req, res){
           if(code == undefined )
           {
             responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
-            console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
             res.send(responses) ; 
             return -1 ; 
            }
           else{
             const module = responseData.entitiesArray[0].value ; 
-            // console.log("code apoge from controller :" , code) ; 
             consulterNote.getNoteByModule(module , code)
             .then((data)=>{
-              console.log( 'data  recuper from  module   : : ', data);
               if(data !== undefined){
               const html = `<p><span class="rounded p-1 m-2 text-dark bg-light">${data}</span> </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
               responses = { 
@@ -152,10 +138,8 @@ async function traiterRequette(req, res){
              res.send(responses)
                }
                else{
-                console.log("############################################# le cas ou data est undefined en module" )
                 consulterNote.getAllModules(code)
                 .then((data)=>{
-                  console.log('data of all modules : ',  data) ; 
                   let html = `<p>le module que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
                   data.forEach(module => {
                     html += `<p><span class=" rounded bg-light w-29 text-dark p-1 m-2 " >${module.nom_md}</span> </p>`;
@@ -180,25 +164,20 @@ async function traiterRequette(req, res){
         const code = process.env.CODE_APOGE ; 
         if(code === undefined){
           responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
-          console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
           res.send(responses) ; 
           return -1 ;
         }else{
           chercherFormations.cycleDispo()
           .then((data)=>{
-            console.log("189",data, typeof data);
-              let html=`<p>voici les differents cycles : </p>`
+              let html=`<p >voici les differents cycles : </p>`
               data.forEach(cycle =>{
-                console.log('here is test');
-                console.log(cycle.cycle);
-                html +=`<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${cycle.cycle}</span> </p>`;
+                html +=`<p><span class="nav-link  text-center rounded border bg-light text-dark m-2 p-1" >${cycle.cycle}</span> </p>`;
               });
               responses ={
                 html : html
               }
               res.setHeader('Content-Type', 'text/html');
               res.send(responses)
-              console.log('01',responses);
           })
             .catch((error)=>{
               console.log(error); 
@@ -207,28 +186,19 @@ async function traiterRequette(req, res){
       }
       // #######################################################" type formation #####################################"""
       else if(responseData.intent === 'type_de_formation'){
-
-        const code = process.env.CODE_APOGE ; 
-        const cycle = responseData.entitiesArray[0].value ;
-        console.log('heeeeeeeeeeeeeeeeeeeeeeeererere',cycle)
+        const code = process.env.CODE_APOGE ; const cycle = responseData.entitiesArray[0].value ;
         if(code === undefined){
           responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
-          console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
           res.send(responses) ; 
           return -1 ;
         }else{
           chercherFormations.formationDispo(cycle)
           .then((data)=>{
-            console.log('221',data); //
-            console.log('data of all modules : ',  data) ; 
                   let html = `<p>voici les formation correspondants disponibles : </p>`;
                   data.forEach(cycle => {
-                    // html += `<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${cycle}</span> </p>`;
-                    // html+=`<a style="color: black;  background-color: white ; border: 1px solid black; border-redius:6px ; margin : 4px  "  href="${cycle.lien}" >${cycle.nom}</a>` ; 
-                    html += `<a target="_blank" class="nav-link rounded border bg-light text-dark m-2 p-1 text-center hover text-danger"  aria-disabled="false"  href="${cycle.lien}">
+                    html += `<a target="_blank" class="nav-link text-center rounded border bg-light text-dark m-2 p-1"  aria-disabled="false"  href="${cycle.lien}">
                     ${cycle.nom}
                     </a>`;
-                  
                   });
                   responses = { 
                     html : html
@@ -238,23 +208,17 @@ async function traiterRequette(req, res){
                 })
         }
       }else if(responseData.intent === 'typeDiplomeRv') {
-        const code = process.env.CODE_APOGE ; 
-        const sujet = responseData.entitiesArray[0].value ;
+        const code = process.env.CODE_APOGE ;  const sujet = responseData.entitiesArray[0].value ;
         if(code == undefined )
         {
           responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
-          console.log("::::::::::::::::::::::: non connecter :::::::::::::::::::::::::::::::::::")
           res.send(responses) ; 
           return -1 ;
          }else{
-          // il faut utiliser la fct de service auth pour extraire le nom et prenom d'etudiant 
-          // qui demende le rendez vous
-          
           demanderRV.sauvgarderRendezVous(code,sujet);
           let NomPrenom = await auth.authentifier(code) ;
           demanderRV.afficherRendezVous(code)
           .then((data)=>{
-            // console.log('256',data);
             let html = `<p>votre Rendez Vous est enregistrer.</p><br>
             <p>nom et prenom : ${NomPrenom.nomEtudiant} ${NomPrenom.prenomEtudiant} </p> <br>
             <p>sujet : retirer de ${data.sujetRv}</p> <br>
@@ -264,10 +228,8 @@ async function traiterRequette(req, res){
             }
             res.setHeader('Content-Type', 'text/html');
             res.send(responses)
-
           })
          }
-
       }
       // ##################################"" releve de notes ##############################
       else if(responseData.intent === 'demenderRendezVous') {
@@ -275,8 +237,7 @@ async function traiterRequette(req, res){
          .then((data)=>{
           if(data !== undefined){ 
             const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light" > Download PDF</a> </p>`
-            sharedData.setSharedData(data) ; // here i pass the data to router.js to use it to generate pdf
-
+            sharedData.setSharedData(data) ;        // here i pass the data to router.js to use it to generate pdf
            responses = { 
            response : responseData.response ,
            html : html, 
@@ -284,7 +245,6 @@ async function traiterRequette(req, res){
          res.setHeader('Content-Type', 'text/html');
          res.send(responses)
         }})
-            
       }
       else{
                    // if nooo service is called 
@@ -293,8 +253,7 @@ async function traiterRequette(req, res){
                     
                     console.log('ici responses');
       }
-
-    };  //fin traiter requete
+    }; 
 
   module.exports = {traiterRequette} ; 
   

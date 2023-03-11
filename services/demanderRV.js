@@ -13,7 +13,6 @@ async function sauvgarderRendezVous(codeApoge, sujetRv) {
           reject(error);
         } else {
           const rowDataPacket = result;
-          console.log(rowDataPacket.affectedRows);
           resolve(rowDataPacket);
         }
       }
@@ -29,9 +28,7 @@ async function afficherRendezVous(codeApoge) {
         if (error) {
           reject(error);
         } else {
-          console.log('32', result) ; 
           const rowDataPacket = result[0];
-          console.log('rowDataPacket 34 ', rowDataPacket) , 
           resolve(rowDataPacket);
         }
       }

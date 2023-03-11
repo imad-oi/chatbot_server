@@ -8,7 +8,4 @@ function getSharedData() {
   return sharedData;
 }
 
-module.exports = {
-  setSharedData,
-  getSharedData
-};
+module.exports = {setSharedData, getSharedData };

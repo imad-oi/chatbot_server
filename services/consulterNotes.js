@@ -11,7 +11,6 @@ async  function getNoteBySemestre(semestre, code_apoge){
       else {
         const rowDataPacket = result[0];
         const note = rowDataPacket?.note;
-        console.log(note) ;  // for test 
         resolve(note);
       }
      });
@@ -28,7 +27,6 @@ async  function getNoteBySemestre(semestre, code_apoge){
         else {
           const rowDataPacket = result[0];
           const note = rowDataPacket?.note;
-          console.log(note) ;  // for test 
           resolve(note);
         }
        });
@@ -44,7 +42,6 @@ async  function getNoteBySemestre(semestre, code_apoge){
           reject(error);
         }
         else {
-          console.log(result) ; 
           resolve(result);
         }
        });
@@ -59,15 +56,12 @@ async  function getNoteBySemestre(semestre, code_apoge){
             reject(error);
           }
           else {
-            console.log(result) ; 
             resolve(result);
           }
          });
         });
       }
   
-
-
 
 module.exports = {  getNoteByModule,getAllSemestre, getNoteBySemestre ,getAllModules} ; 
 

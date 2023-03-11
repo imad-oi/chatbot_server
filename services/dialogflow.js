@@ -1,5 +1,5 @@
 const dialogflow = require('@google-cloud/dialogflow') ; 
-// credentials
+
 const CREDENTIALS = {"type": "service_account",
     "project_id": "chatbot-auds",
     "private_key_id": "cfc8b81e2e81e12dbe22b6b8ae765c0003f95e57",
@@ -15,13 +15,19 @@ const CREDENTIALS = {"type": "service_account",
 const projectId  = CREDENTIALS.project_id ; 
 const configuration  = {credentials : { private_key: CREDENTIALS['private_key'],  client_email:CREDENTIALS['client_email']}}
 const sessionClient = new dialogflow.SessionsClient(configuration) ; 
-// const  previousContexts = [];
+
 const detectIntent = async (languageCode , queryText  , sessionId , previousContexts )=>{
 
     let sessionPath = sessionClient.projectAgentSessionPath(projectId, sessionId);
     // the text query request 
-    let request = { session: sessionPath ,  queryInput :{text:{text:queryText  , languageCode : languageCode },queryParams: { contexts: previousContexts // pass in the previous contexts to check for follow-up intents
-        }}};
+    let request = {
+       session: sessionPath ,
+         queryInput :
+            {  text:
+               {text:queryText  ,
+                languageCode : languageCode
+               }
+               }};
     // send request and log result 
     const responses = await sessionClient.detectIntent(request) ;
     const result = responses[0].queryResult;
@@ -30,7 +36,6 @@ const detectIntent = async (languageCode , queryText  , sessionId , previousCont
     // get the entities names
     const fields = result.parameters.fields ;
     const code = result.parameters.code_apoge ;
-    console.log(" cooooooode : :   ",code) ;
 
     const entities = Object.keys(fields);
     // i created  an array to store the entiteis and their values 
@@ -51,26 +56,26 @@ const detectIntent = async (languageCode , queryText  , sessionId , previousCont
         entitiesArray.push(ObjectEntity) ;        // add the object to entities's array 
       }
     }
-    console.table(entitiesArray) ;
-    console.log(result.fulfillmentText ) ;  
-     // check for follow-up intent
-    const outputContexts = result.outputContexts || [];
-    const followupContexts = outputContexts.filter(context => context.name.includes('/contexts/'));
-    const followupIntent = followupContexts.find(context => context.name.includes(`/${intentName}-followup`));
+    // console.table(entitiesArray) ;
+    // console.log(result.fulfillmentText ) ;  
+    // const outputContexts = result.outputContexts || [];
+    // const followupContexts = outputContexts.filter(context => context.name.includes('/contexts/'));
+    // const followupIntent = followupContexts.find(context => context.name.includes(`/${intentName}-followup`));
     // get the context object
-    const contextObject = outputContexts.reduce((obj, context) => {
-    const contextName = context.name.split('/contexts/')[1];
-    obj[contextName] = context.parameters;
-    console.log(contextName);
-    return contextName;
-  }, {});
+  //   const contextObject = outputContexts.reduce((obj, context) => {
+  //   const contextName = context.name.split('/contexts/')[1];
+  //   obj[contextName] = context.parameters;
+  //   console.log(contextName);
+  //   return contextName;
+
+  // }, {});
+
+
     return{
       response: result.fulfillmentText, 
       entities : entities  , 
       intent : intentName , 
       entitiesArray : entitiesArray ,
-      followupIntent: followupIntent ? followupIntent.parameters : null, // return the parameters of the follow-up intent, if it exists
-      context: contextObject,
     }
   } 
 

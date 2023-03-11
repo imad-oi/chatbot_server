@@ -17,16 +17,13 @@ router.post('/api/chatbot', ( req, res)=>{
 
 router.post('/api/transcribe', (req, res)=>{
     let data = req.body ; 
-    console.log(data) ; 
     res.send('bien recu');
 });
 
 
 router.get('/download-pdf', (req, res) => {
 
-
     const data = getSharedData() ; 
-    console.log(' data shared from router.js',data , typeof data ) ;
 
     let tableArray = {
       headers: ["Module", "Moyenne Generale", "Barreme", "Resultat"],
@@ -46,8 +43,6 @@ router.get('/download-pdf', (req, res) => {
       tableArray.rows[i + 1] = [row.nom_md, row.note, "/20","Valide" ];
     }
 
-
-
     
     let doc = new PDFDocument();
     const semestre = 'semestre 1' ; 
@@ -63,9 +58,12 @@ router.get('/download-pdf', (req, res) => {
     
     
     
-    doc.moveDown(); // separate tables
-    doc.table( tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
-    doc.moveDown(); // separate tables
+    doc.moveDown();                             // separate tables
+    doc.table( tableArray, { width: 300 });     // A4 595.28 x 841.89 (portrait) (about width sizes)
+    doc.moveDown();                             // separate tables
+
+
+
     // add the table to the PDF document
     // doc.table(table);
     // set the HTTP headers to indicate that a PDF file should be downloaded
