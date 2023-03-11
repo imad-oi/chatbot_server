@@ -35,7 +35,10 @@ router.get('/download-pdf', (req, res) => {
         ["", "","",""],
         ["", "","",""],
         ["", "","",""],
+        ["", "","",""],
+        ["", "","",""],
       ],
+      align: 'center' ,
     };
 
     for (let i = 0; i < data.length; i++) {
@@ -47,9 +50,15 @@ router.get('/download-pdf', (req, res) => {
 
     
     let doc = new PDFDocument();
+    const semestre = 'semestre 1' ; 
     
     doc.info.Title = 'Releve de notes  ';
-    doc.text('releve de notes ');
+    doc.moveDown();
+    doc.text(`Releve de notes du ${semestre }`, {
+      width: 410,
+      align: 'center'
+    }
+);
     
     
     
