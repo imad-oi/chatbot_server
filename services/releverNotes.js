@@ -1,24 +1,31 @@
 const pool = require('../database')
-const PDFDocument = require('pdfkit');
-async function releverNoteSemestre(code_apoge,semestre){
 
+
+async  function getNoteAndModulesOfSemestre(semestre, code_apoge){
+  const code = code_apoge  ; 
+  const sm = semestre ;
+  return new Promise((resolve, reject) => {
+    pool.query(`SELECT note, nom_md from note_module where code_apoge='${code}' and nom_md in (select nom_md from module where nom_sm= '${sm}')`, (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      else {
+        resolve(result);
+      }
+     });
+    });
 }
-releverNoteSemestre();
-app.get('/download-pdf', (req, res) => {
-    // create a new PDF document
-    const doc = new PDFDocument();
-    // set the PDF document's title
-    doc.info.Title = 'My PDF Document';
-    // write some text to the PDF document
-    doc.text('Hello, world!');
-    // set the HTTP headers to indicate that a PDF file should be downloaded
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=my-document.pdf');
-    // pipe the PDF document to the response stream
-    doc.pipe(res);
-    // finalize the PDF document
-    doc.end();
-  });
-  module.exports = {
-    releverNoteSemestre
-} ; 
+
+getNoteAndModulesOfSemestre('s1', '1234567') ; 
+
+
+   async function generatePdf(data ){
+      return data ; 
+    }
+
+
+
+
+
+
+  module.exports = { getNoteAndModulesOfSemestre , generatePdf} ; 

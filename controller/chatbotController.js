@@ -2,9 +2,12 @@
 const consulterNote = require('../services/consulterNotes');
 const demanderRV = require('../services/demanderRV');
 const chercherFormations = require('../services/chercherFormations');
+const releverNote = require('../services/releverNotes'); 
 const auth = require('../services/auth');
 const detectIntent = require('../services/dialogflow') ; 
+const sharedData = require('../services/sharedData') ; 
 const pool = require('../database');
+
 
 async function traiterRequette(req, res){
     let languageCode = req.body.languageCode;
@@ -16,7 +19,7 @@ async function traiterRequette(req, res){
       entities : '', 
       response : '',
       entitiesArray : '', 
-      nom : ''
+      nom : '', 
         }
 
      //   var responseData = await detectIntent(languageCode, queryText, sessionId );
@@ -36,7 +39,6 @@ async function traiterRequette(req, res){
 
     // ###########################################" login " ########################################""
      if(responseData.intent === 'login'){
-      console.table( 'logggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiin' , responseData.entities)
        code_apoge = responseData.entitiesArray[0].value ;
        process.env.CODE_APOGE = code_apoge ;
           if(code_apoge !== undefined){
@@ -223,7 +225,10 @@ async function traiterRequette(req, res){
                   data.forEach(cycle => {
                     // html += `<p><span style="border:4px solid black ;  border-radius:15px  ; max-width:50px ">${cycle}</span> </p>`;
                     // html+=`<a style="color: black;  background-color: white ; border: 1px solid black; border-redius:6px ; margin : 4px  "  href="${cycle.lien}" >${cycle.nom}</a>` ; 
-                    html += `<a target="_blank" class="nav-link rounded border bg-light text-dark m-2 p-1 text-center"  aria-disabled="false" href="${cycle.lien}">${cycle.nom}</a>`;
+                    html += `<a target="_blank" class="nav-link rounded border bg-light text-dark m-2 p-1 text-center hover text-danger"  aria-disabled="false"  href="${cycle.lien}">
+                    ${cycle.nom}
+                    </a>`;
+                  
                   });
                   responses = { 
                     html : html
@@ -242,24 +247,18 @@ async function traiterRequette(req, res){
           res.send(responses) ; 
           return -1 ;
          }else{
-          //il faut utiliser la fct de service auth pour extraire le nom et prenom d'etudiant 
+          // il faut utiliser la fct de service auth pour extraire le nom et prenom d'etudiant 
           // qui demende le rendez vous
-          demanderRV.sauvgarderRendezVous(codeapoge,sujet);
-          demanderRV.afficherRendezVous(codeapoge)
+          
+          demanderRV.sauvgarderRendezVous(code,sujet);
+          let NomPrenom = await auth.authentifier(code) ;
+          demanderRV.afficherRendezVous(code)
           .then((data)=>{
-            console.log('123',data);
+            // console.log('256',data);
             let html = `<p>votre Rendez Vous est enregistrer.</p><br>
-            <p>nom et prenom : ${etudiant.nom} ${etudiant.nom} </p> <br>
-            <p>sujet : retirer de ${data.sujet}</p> <br>
-            <p>date : ${data.date}</p> <br>
-            `;//faut creer un table dans la base donne 
-            /* create table renderVou (
-                id numeric(10)not null unique,
-                sujet varachar(30),code_apoge_fk varchar(20),
-                PRIMERY KEY (id) ,
-                FOREIGN KEY (code_apoge_fk) REFERENCES etudiant(code_apoge)
-                );
-    */
+            <p>nom et prenom : ${NomPrenom.nomEtudiant} ${NomPrenom.prenomEtudiant} </p> <br>
+            <p>sujet : retirer de ${data.sujetRv}</p> <br>
+            <p>date : ${data.dateRv}</p> <br>`;
             responses = { 
               html : html
             }
@@ -269,6 +268,23 @@ async function traiterRequette(req, res){
           })
          }
 
+      }
+      // ##################################"" releve de notes ##############################
+      else if(responseData.intent === 'demenderRendezVous') {
+         releverNote.getNoteAndModulesOfSemestre('s1', 1234567)
+         .then((data)=>{
+          if(data !== undefined){ 
+            const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light" > Download PDF</a> </p>`
+            sharedData.setSharedData(data) ; // here i pass the data to router.js to use it to generate pdf
+
+           responses = { 
+           response : responseData.response ,
+           html : html, 
+         }
+         res.setHeader('Content-Type', 'text/html');
+         res.send(responses)
+        }})
+            
       }
       else{
                    // if nooo service is called 

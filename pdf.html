@@ -5,24 +5,20 @@
   </head>
   <body>
     <button id="download-btn">Download PDF</button>
-
     <script>
       // add a click event listener to the button
       const downloadBtn = document.getElementById('download-btn');
       downloadBtn.addEventListener('click', async () => {
         // send a request to the server to download the PDF
         const response = await fetch('/download-pdf');
-
         // create a blob from the response data
         const blob = await response.blob();
-
         // create a URL for the blob
         const url = URL.createObjectURL(blob);
-
         // create a link and click it to download the PDF
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'my-document.pdf';
+        link.download = 'releve_notes.pdf';
         link.click();
       });
     </script>
