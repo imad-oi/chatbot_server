@@ -232,11 +232,12 @@ async function traiterRequette(req, res){
          }
       }
       // ##################################"" releve de notes ##############################
-      else if(responseData.intent === 'demenderRendezVous') {
-         releverNote.getNoteAndModulesOfSemestre('s1', 1234567)
+      else if(responseData.intent === 'ConsulterReleveDeNote') {
+        const code = process.env.CODE_APOGE ;  const semestre = responseData.entitiesArray[0].value ;
+         releverNote.getNoteAndModulesOfSemestre(code, semestre)
          .then((data)=>{
           if(data !== undefined){ 
-            const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light" > Download PDF</a> </p>`
+            const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light" > Download Relve de note</a> </p>`
             sharedData.setSharedData(data) ;        // here i pass the data to router.js to use it to generate pdf
            responses = { 
            response : responseData.response ,

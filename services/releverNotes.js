@@ -15,7 +15,23 @@ async  function getNoteAndModulesOfSemestre(semestre, code_apoge){
     });
 }
 
+async  function getEtudiant(code_apoge){
+  const code = code_apoge  ; 
+  return new Promise((resolve, reject) => {
+    pool.query(`SELECT * from etudiant where code_apoge='${code}' `, (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      else {
+        resolve(result);
+      }
+     });
+    });
+}
+getEtudiant();
 getNoteAndModulesOfSemestre('s1', '1234567') ; 
 
 
-  module.exports = { getNoteAndModulesOfSemestre } ; 
+  module.exports = { 
+    getNoteAndModulesOfSemestre, getEtudiant 
+  } ; 
