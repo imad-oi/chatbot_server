@@ -5,6 +5,7 @@ const PDFDocument = require('pdfkit-table');
 const {traiterRequette} = require('../controller/chatbotController');
 const {getSharedData} = require('../services/sharedData');
 const {getEtudiant}= require('../services/releverNotes');
+const {getNoteBySemestre}=require('../services/consulterNotes')
 
 
 // const middleWare = ( req , res , next)=>{
@@ -23,9 +24,11 @@ router.post('/api/transcribe', (req, res)=>{
 
 
 router.get('/download-pdf', (req, res) => {
-    const code = process.env.CODE_APOGE ; 
-    const dataShared = getSharedData() ; 
-    const etudiant =getEtudiant(code);
+  //il faut avoir ici un variable contien semestre
+  const code = process.env.CODE_APOGE ; 
+  const dataShared = getSharedData() ; 
+  const etudiant =getEtudiant(code);
+  const noteSemestre =getNoteBySemestre(semestre,code);
 
 /*     let tableArray = {
       headers: ["Module", "Moyenne Generale", "Barreme", "Resultat"],
@@ -126,7 +129,7 @@ const tableDenote = [
  ['', '', '']
 ];
 
-for (let i = 1; i < tableDenote.length; i++) {
+for (let i = 0; i < tableDenote.length; i++) {
   const row = dataShared[i];
   tableDenote.rows[i + 1] = [row.nom_md, row.note + " /20","Valide" ];
 }
@@ -151,7 +154,7 @@ for (let i = 0; i < numRows; i++) {
 }
  doc
    .text('RESULTAT', rectPosX + 20, 450)
-   .text('note semestre / 20', rectPosX + 210, 450)// note semestre 
+   .text( noteSemestre.note + '/ 20', rectPosX + 210, 450)// note semestre 
    .text('valide', rectPosX + 400, 450);// etat
    //#######################
    doc.rect(421,477,40,16)
@@ -196,11 +199,12 @@ for (let i = 0; i < numRows; i++) {
    const singDoy = '/home/abdelfatah/Pictures/aa.jpeg';
    doc.image(singDoy,90,585 ,{width: 60,height:30},);
    doc.text('Pr. Moha TAOURIRTE',78,620);
-
+   const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().slice(0, 10);
    //########################date de retriert
    doc.fontSize(7);
    doc.font('Helvetica');
-   doc.text('Fait à Marrakech le xxxxx - xxxxx - xxxxx ',120,670)// sysdate
+   doc.text('Fait à Marrakech le ' + formattedDate,120,670)// sysdate
        .text('Le Doyen de la faculté des sciences et techniques de Marrakech',60,680)
        .text("vis important : il ne peut étre délivré qu''un seul exemplaire du présent relevé de note .Aucun duplicata ne sera fourni",130,710);
    
