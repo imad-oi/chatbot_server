@@ -233,16 +233,21 @@ async function traiterRequette(req, res){
          }
       }
       // ##################################"" releve de notes ##############################
-      else if(responseData.intent === 'demenderRendezVous') {
-         releverNote.getNoteAndModulesOfSemestre('s1', 1234567)
+      else if(responseData.intent === 'ConsulterReleveDeNote') {
+        console.table(responseData.entitiesArray) ; 
+        const code = process.env.CODE_APOGE ;  const semestre = responseData.entitiesArray[0].value ;
+        console.log('239', code , semestre ) ; 
+        releverNote.getNoteAndModulesOfSemestre('1234567', 's1')
          .then((data)=>{
           if(data !== undefined){ 
-            const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light" > Download PDF</a> </p>`
-            sharedData.setSharedData(data) ;        // here i pass the data to router.js to use it to generate pdf
+            console.log({data,semestre})
+            sharedData.setSharedData(data) ;  // here i pass the data to router.js to use it to generate pdf
+            const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light" > Download Relve de note</a> </p>`
            responses = { 
            response : responseData.response ,
            html : html, 
          }
+
          res.setHeader('Content-Type', 'text/html');
          res.send(responses)
         }})

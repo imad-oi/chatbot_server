@@ -14,7 +14,6 @@ async function cycleDispo() {
     });
   });
 }
-cycleDispo();
 
 async function formationDispo(cycle) {
   return new Promise((resolve, reject) => {
