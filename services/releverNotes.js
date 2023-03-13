@@ -15,6 +15,9 @@ async  function getNoteAndModulesOfSemestre(semestre, code_apoge){
     });
 }
 
+
+
+
 getNoteAndModulesOfSemestre('s1', '1234567') ; 
 
 

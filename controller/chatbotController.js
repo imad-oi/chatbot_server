@@ -219,6 +219,7 @@ async function traiterRequette(req, res){
           let NomPrenom = await auth.authentifier(code) ;
           demanderRV.afficherRendezVous(code)
           .then((data)=>{
+            
             let html = `<p>votre Rendez Vous est enregistrer.</p><br>
             <p>nom et prenom : ${NomPrenom.nomEtudiant} ${NomPrenom.prenomEtudiant} </p> <br>
             <p>sujet : retirer de ${data.sujetRv}</p> <br>

@@ -56,8 +56,6 @@ router.get('/download-pdf', (req, res) => {
 );
     
     
-    
-    
     doc.moveDown();                             // separate tables
     doc.table( tableArray, { width: 300 });     // A4 595.28 x 841.89 (portrait) (about width sizes)
     doc.moveDown();                             // separate tables
@@ -65,7 +63,6 @@ router.get('/download-pdf', (req, res) => {
 
 
     // add the table to the PDF document
-    // doc.table(table);
     // set the HTTP headers to indicate that a PDF file should be downloaded
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=releve_note.pdf');
