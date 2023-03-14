@@ -2,7 +2,7 @@ const pool = require('../database')
 
 async  function getNoteAndModulesOfSemestre(code_apoge, semestre){
   return new Promise((resolve, reject) => {
-    pool.query(`SELECT note, nom_md from note_module where code_apoge='${code_apoge}' and nom_md in (select nom_md from module where nom_sm='${semestre}' )`, (error, result) => {
+    pool.query(`SELECT note, nom_md, etat from note_module where code_apoge='${code_apoge}' and nom_md in (select nom_md from module where nom_sm='${semestre}' )`, (error, result) => {
       if (error) {
         reject(error);
       }
@@ -29,7 +29,7 @@ async  function getEtudiant(code_apoge){
 }
 async  function getSemestre(code_apoge,semestre){
   return new Promise((resolve, reject) => {
-    pool.query(`SELECT * from note_semestre where code_apoge='${code_apoge}' and nom_sm = '${smestre}'`, (error, result) => {
+    pool.query(`SELECT * from note_semestre where code_apoge='${code_apoge}' and nom_sm = '${semestre}'`, (error, result) => {
       if (error) {
         reject(error);
       }
@@ -40,6 +40,5 @@ async  function getSemestre(code_apoge,semestre){
     });
 }
 
-getEtudiant('1234567')
 
   module.exports = {  getNoteAndModulesOfSemestre, getEtudiant ,getSemestre } ; 

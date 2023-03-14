@@ -3,16 +3,9 @@ const router = express.Router();
 const PDFDocument = require('pdfkit-table');
 
 const {traiterRequette} = require('../controller/chatbotController');
-const {getSharedData} = require('../services/sharedData');
+const {getSharedData , getSm} = require('../services/sharedData');
 const {getEtudiant}= require('../services/releverNotes');
 const {getSemestre}= require('../services/releverNotes');
-//const {getNoteBySemestre}=require('../services/consulterNotes')
-
-
-// const middleWare = ( req , res , next)=>{
-//     console.log("imad ") ; 
-//     next() ; 
-// }
 
 router.post('/api/chatbot', ( req, res)=>{
     traiterRequette(req, res) ; 
@@ -23,53 +16,25 @@ router.post('/api/transcribe', (req, res)=>{
     res.send('bien recu');
 });
 
-
 router.get('/download-pdf',  async (req, res) => {
 
-
-  let code = '1234567'
-  let semestre = 's1' ; 
+  let code = process.env.CODE_APOGE ;
+  const semestre = getSm();
   const dataShared = getSharedData() ; 
-  console.log('datashared ',dataShared) ; 
+  console.log(' ##################################################### ' , semestre ) ;
+
   const etudiant  = await getEtudiant(code);
   const semestreData  = await getSemestre(code,semestre);
-  //il faut avoir ici un variable contien semestre
-  // const code = process.env.CODE_APOGE ; 
 
-
-
-
-  /*   const noteSemestre =getNoteBySemestre(semestre,code); */
-  
-//############################################ releve de note structure pdf ####################
- // create a new PDF document
  const doc = new PDFDocument();
   
- // set the rectangle dimensions and position
  const rectWidth = 575.28;
  const rectHeight = 60;
  const rectPosX = 12;
  const rectPosY = 20;
 
- // set the text to display inside the rectangle
  const rectText1 = 'UNIVERSTÉ CADI AYYAD';
- const rectText2 = 'ANNÉE UNVIVERSITAIRE - '+ semestreData.anne;//anne apartir de table semestre
-
-
- // let tableDenote = {
-//   headers: ["Module", "Moyenne Generale", "Barreme", "Resultat"],
-//   rows: [
-//     ["", "","",""],
-//     ["", "","",""],
-//   ],
-//   align: 'center' ,
-// };
-
-// for (let i = 0; i < sharedData.length; i++) {
-//   const row = sharedData[i];
-//   tableDenote.rows[i + 1] = [row.nom_md, row.note, "/20","Valide" ];
-// }
-
+ const rectText2 = 'ANNÉE UNVIVERSITAIRE - '+ semestreData.anne;    
 
  // add the rectangle, text, and single lines to the PDF document
  doc.rect(rectPosX, rectPosY, rectWidth, rectHeight)
@@ -77,8 +42,6 @@ router.get('/download-pdf',  async (req, res) => {
     .text(rectText1, rectPosX + 10, rectPosY + 10)
 
     .text(rectText2, 200, rectPosY + rectHeight / 2 + 10 , { align: 'center' });
-
-    //fstg
     
      doc.fontSize(11)
     .text('FACULTÉ DES SCIENCES ET THECHNIQUES GUELIZ - MARRAKECH', rectPosX, rectPosY + rectHeight + 16)
@@ -92,7 +55,7 @@ router.get('/download-pdf',  async (req, res) => {
 
     .text('NUMERO APOGEÉ : '+etudiant.code_apoge, rectPosX + 20, rectPosY + rectHeight + 100) // apoge
     .text('CNE : '+etudiant.cne, rectPosX + 20, rectPosY + rectHeight + 120) // cne 
-    .text('DATE DE NAISSANCE : '+etudiant.age, rectPosX + 20, rectPosY + rectHeight + 140) // date naissance 
+    .text('DATE DE NAISSANCE : '+ etudiant.date_naissance, rectPosX + 20, rectPosY + rectHeight + 140) // date naissance 
     .text('inscret au '+semestre+' '+etudiant.filiere, rectPosX + 20, rectPosY + rectHeight + 180) // semestre 
     .text('obtenu les notes suivantes :', rectPosX + 20, rectPosY + rectHeight + 200); 
 
@@ -101,8 +64,8 @@ const tableTop = 300; // top margin of the table
 const tableLeft = 20; // left margin of the table
 const colWidth = 190; // width of each column
 const rowHeight = 20; // height of each row
-const numRows = 7; // total number of rows
-const numCols = 3; // total number of columns
+const numRows = 7;    // total number of rows
+const numCols = 3;     // total number of columns
 
 // Define the data to be displayed in the table
 const tableDenote = [
@@ -115,12 +78,29 @@ const tableDenote = [
  ['', '', '']
 ];
 
-// for (let i = 0; i < tableDenote.length; i++) {
-//   console.log(sharedData[i])
-//   const row = sharedData[i];
-//   tableDenote[i + 1] = [row.nom_md, row.note + " /20","Valide" ];
-// }
 
+for (let i = 0; i < 6; i++) {   //module
+  for(let j = 0; j < 1; j++){
+    /* const row = dataShared[i][j]; */
+    tableDenote[i+1][j] = dataShared[i].nom_md;
+    console.log(dataShared[i].nom_md);
+  }
+}
+console.log(tableDenote);
+
+for (let i = 0; i < 6; i++) {   //note module
+  for(let j = 1; j < 2; j++){
+    /* const row = dataShared[i]; */
+    tableDenote[i+1][j] = dataShared[i].note + '/20';
+    console.log(dataShared[i].note);
+  }
+}
+for (let i = 0; i < 6; i++) {   //etat
+  for(let j = 2; j < 3; j++){
+    tableDenote[i+1][j] = dataShared[i].etat;
+    console.log(dataShared[i].etat);
+  }
+}
 // // Loop through each row and column to draw the table
 for (let i = 0; i < numRows; i++) {
  for (let j = 0; j < numCols; j++) {
@@ -136,42 +116,17 @@ for (let i = 0; i < numRows; i++) {
    doc.text(tableDenote[i][j], x + 5, y + 5);
  }
 }
-for (let i = 0; i < 6; i++) {   //module
-  for(let j = 0; j < 1; j++){
-    /* const row = dataShared[i][j]; */
-    tableDenote[i+1][j] = dataShared[i][j];
-    console.log(dataShared[i][j]);
-  }
-}
-console.log(tableDenote);
-
-for (let i = 0; i < 6; i++) {   //note module
-  for(let j = 1; j < 2; j++){
-    /* const row = dataShared[i]; */
-    tableDenote[i+1][j] = dataShared[i][j];
-    console.log(dataShared[i][j]);
-  }
-}
-for (let i = 0; i < 6; i++) {   //etat
-  for(let j = 2; j < 3; j++){
-    /* const row = dataShared[i]; */
-    tableDenote[i+1][j] = dataShared[i][j];
-    console.log(dataShared[i][j]);
-  }
-}
-
 
  doc
    .text('RESULTAT', rectPosX + 20, 450)
    .text( semestreData.note + '/ 20', rectPosX + 210, 450)// note semestre 
    .text(semestreData.etat, rectPosX + 400, 450);// etat
    //#######################
-   doc.rect(421,477,40,16)
+   doc.rect(421,477,70,16)
      .stroke()
        .text(semestreData.anne,430,482);
-   //(x,y,w,h)
 //###########################################################################################################
-  //  const imagePath = '/home/abdelfatah/Pictures/ucalogo.png';
+  //  const imagePath = '/cheminImage';
   //  doc.image(imagePath,380,500 ,{width: 40,height:60},);
    doc.font('Helvetica');
    doc.fontSize(8);

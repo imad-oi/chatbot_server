@@ -85,7 +85,7 @@ async function traiterRequette(req, res){
             consulterNote.getNoteBySemestre(semestre , code)
             .then((data)=>{
               if(data !== undefined){
-              const html = `<p><span class="rounded bg-light w-29 text-dark p-1 m-2 ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
+              const html = `<p><span class="rounded bg-light w-29 text-dark p-1 m-5 ">${data}</span>  </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
               responses = { 
                entities : responseData.entities,
                response : responseData.response ,
@@ -99,7 +99,7 @@ async function traiterRequette(req, res){
                 .then((data)=>{
                   let html = `<p>le semestre que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
                   data.forEach(sm => {
-                    html += `<span class="rounded bg-light w-29 text-dark p-1 m-2 ">${sm.nom_sm}</span> `;
+                    html += `<p><span class="rounded bg-light w-29 text-dark px-5 m-5 ">${sm.nom_sm}</span></p> `;
                   });
                   responses = { 
                     html : html
@@ -128,7 +128,7 @@ async function traiterRequette(req, res){
             consulterNote.getNoteByModule(module , code)
             .then((data)=>{
               if(data !== undefined){
-              const html = `<p><span class="rounded p-1 m-2 text-dark bg-light">${data}</span> </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
+              const html = `<p><span class="rounded p-1 m-5 text-dark bg-light">${data}</span> </br> N'hésitez pas à me poser d\'autres questions si vous en avez besoin ? </p>`
               responses = { 
                entities : responseData.entities,
                response : responseData.response ,
@@ -140,9 +140,9 @@ async function traiterRequette(req, res){
                else{
                 consulterNote.getAllModules(code)
                 .then((data)=>{
-                  let html = `<p>le module que vous avez entré n\'est pas valid  , voici les semestre disponibles : </p>`;
+                  let html = `<p>le module que vous avez entré n\'est pas valid  , voici les modules disponibles : </p>`;
                   data.forEach(module => {
-                    html += `<p><span class=" rounded bg-light w-29 text-dark p-1 m-2 " >${module.nom_md}</span> </p>`;
+                    html += `<p class="row mx-2"><span class= "rounded bg-light w-29 text-dark px-1 " >${module.nom_md}</span> </p>`;
                   });
                   responses = { 
                     html : html
@@ -156,8 +156,6 @@ async function traiterRequette(req, res){
               console.log(error); 
             })
           }
-
-
 //########################  cycle disponaible    ##################################
       }
       else  if(responseData.intent === 'Consulterformation'){
@@ -220,10 +218,20 @@ async function traiterRequette(req, res){
           demanderRV.afficherRendezVous(code)
           .then((data)=>{
             
+            const options = { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric', 
+              // hour: 'numeric', 
+              // minute: 'numeric', 
+              // second: 'numeric',
+              // hour12: false
+            };
+            let date =  data.dateRv.toLocaleDateString('fr-FR', options) ; 
             let html = `<p>votre Rendez Vous est enregistrer.</p><br>
             <p>nom et prenom : ${NomPrenom.nomEtudiant} ${NomPrenom.prenomEtudiant} </p> <br>
             <p>sujet : retirer de ${data.sujetRv}</p> <br>
-            <p>date : ${data.dateRv}</p> <br>`;
+            <p>date  : ${date}</p> <br>`;
             responses = { 
               html : html
             }
@@ -235,7 +243,8 @@ async function traiterRequette(req, res){
       // ##################################"" releve de notes ##############################
       else if(responseData.intent === 'ConsulterReleveDeNote') {
         console.table(responseData.entitiesArray) ; 
-        const code = process.env.CODE_APOGE ;  const semestre = responseData.entitiesArray[0].value ;
+        const code = process.env.CODE_APOGE ;
+        const semestre = responseData.entitiesArray[0].value ;
         if(code == undefined )
         {
           responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
@@ -243,12 +252,14 @@ async function traiterRequette(req, res){
           return -1 ;
          }else{
         console.log('239', code , semestre ) ; 
-        releverNote.getNoteAndModulesOfSemestre('1234567', 's1')
+        releverNote.getNoteAndModulesOfSemestre(code, semestre)
          .then((data)=>{
           if(data !== undefined){ 
-            console.log({data,semestre})
-            sharedData.setSharedData(data) ;  // here i pass the data to router.js to use it to generate pdf
-            const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light" > Download Relve de note</a> </p>`
+            console.log(data)
+            sharedData.setSharedData(data) ;
+            sharedData.setSemstre(semestre);
+            // here i pass the data to router.js to use it to generate pdf
+            const html = `<p> <a href="http://localhost:5000/download-pdf  " target="_blanck" class="btn btn-light mr-3 " > Download Relve de note</a> </p>`
            responses = { 
            response : responseData.response ,
            html : html, 

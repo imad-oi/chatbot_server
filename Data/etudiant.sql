@@ -66,24 +66,24 @@ INSERT INTO module (id, nom_md, nom_sm) VALUES(1, 'analyse 1', 's1','2020','vali
 INSERT INTO note_semestre (id, code_apoge, nom_sm, note, anne, etat) VALUES(1, '1234567', 's1', 16, '2020-2021', 'Valide'),(2, '1234567', 's2', 12, '2020-2021', 'Valide'),(3, '1234567', 's3', 18, '2021-2022', 'Valide'),(4, '1234567', 's4', 15, '2021-2022', 'Valide'),(5, '1234567', 's5', 10, '2022-2023', 'Valide'),(6, '1234567', 's6', 13, '2022-2023', 'Valide');
 
 -- insert into note_module for etudiant with code_apoge 1234567
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(1, '1234567', 'algébre 1', 14,'2020','valide');
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(1, '1234567', 'algébre 1', 14,'2020','valide');
 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(2, '1234567', ' algébre 2', 17,'2021','valide') ;
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(3, '1234567', 'algorithme et programmation 1', 12,'2020','valide');
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(2, '1234567', ' algébre 2', 17,'2021','valide') ;
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(3, '1234567', 'algorithme et programmation 1', 12,'2020','valide');
 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(4, '1234567', 'algorithme et programmation 2', 16,'2021','valide') ;
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(5, '1234567', 'analyse 1', 19,'2020','valide'); 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(6, '1234567', 'analyse 2', 15,'2021','valide'); 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(7, '1234567', 'analyse 3', 13,'2021','valide'); 
-INSERT INTO note_module (id, code_apoge, nom_md, note),etat,anne VALUES(8, '1234567', 'analyse 4', 11,'2022','valide');
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(4, '1234567', 'algorithme et programmation 2', 16,'2021','valide') ;
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(5, '1234567', 'analyse 1', 19,'2020','valide'); 
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(6, '1234567', 'analyse 2', 15,'2021','valide'); 
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(7, '1234567', 'analyse 3', 13,'2021','valide'); 
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(8, '1234567', 'analyse 4', 11,'2022','valide');
 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(9, '1234567', 'base de donnée', 18,'2022','valide'),(10, '1234567', 'BDR', 10,'2023','valide'),(11, '1234567', 'chimie minerale', 14,'2022','valide'), (12, '1234567', 'chimie organique', 13,'2022','valide'), (13, '1234567', 'developpement web', 15,'2022','valide'), (14, '1234567', 'electricte', 11,'2021','valide');
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(9, '1234567', 'base de donnée', 18,'2022','valide'),(10, '1234567', 'BDR', 10,'2023','valide'),(11, '1234567', 'chimie minerale', 14,'2022','valide'), (12, '1234567', 'chimie organique', 13,'2022','valide'), (13, '1234567', 'developpement web', 15,'2022','valide'), (14, '1234567', 'electricte', 11,'2021','valide');
 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(15, '1234567', 'electromagnitesme', 14,'2022','valide'), (16, '1234567', 'electronique', 16,'2021','valide'), (17, '1234567', 'ihm', 12,'2023','valide'), (18, '1234567', 'java', 10,'2022','valide'), (19, '1234567', 'java Jee', 17,'2023','valide'), (20, '1234567', 'linux', 11,'2022','valide');
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(15, '1234567', 'electromagnitesme', 14,'2022','valide'), (16, '1234567', 'electronique', 16,'2021','valide'), (17, '1234567', 'ihm', 12,'2023','valide'), (18, '1234567', 'java', 10,'2022','valide'), (19, '1234567', 'java Jee', 17,'2023','valide'), (20, '1234567', 'linux', 11,'2022','valide');
 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(21, '1234567', 'mecanique de point et optique', 13,'2020','valide'), (22, '1234567', 'mecanique de solide', 15,'2021','valide'), (23, '1234567', 'mecanique quantique', 16,'2022','valide'), (24, '1234567', 'réacticté chimique', 17,'2021','valide'), (25, '1234567', 'réseaux informatique', 18,'2022','valide'), (26, '1234567', 'SEM', 19,'2021','valide');
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(21, '1234567', 'mecanique de point et optique', 13,'2020','valide'), (22, '1234567', 'mecanique de solide', 15,'2021','valide'), (23, '1234567', 'mecanique quantique', 16,'2022','valide'), (24, '1234567', 'réacticté chimique', 17,'2021','valide'), (25, '1234567', 'réseaux informatique', 18,'2022','valide'), (26, '1234567', 'SEM', 19,'2021','valide');
 
-INSERT INTO note_module (id, code_apoge, nom_md, note,etat,anne) VALUES(27, '1234567', 'statstique', 20,'2021','valide'), (28, '1234567', 'structure de donnée', 10,'2022','valide'), (29, '1234567', 'tec 1', 11,'2020','valide'), (30, '1234567', 'tec 2', 12,'2021','valide'), (31, '1234567', 'tec 3', 13,'2021','valide'), (32, '1234567', 'thermodynamique', 14,'2020','valide'), (33, '1234567', 'uml', 15,'2022','valide');
+INSERT INTO note_module (id, code_apoge, nom_md, note,annee,etat) VALUES(27, '1234567', 'statstique', 20,'2021','valide'), (28, '1234567', 'structure de donnée', 10,'2022','valide'), (29, '1234567', 'tec 1', 11,'2020','valide'), (30, '1234567', 'tec 2', 12,'2021','valide'), (31, '1234567', 'tec 3', 13,'2021','valide'), (32, '1234567', 'thermodynamique', 14,'2020','valide'), (33, '1234567', 'uml', 15,'2022','valide');
 
 
 '2020','valide' s1
