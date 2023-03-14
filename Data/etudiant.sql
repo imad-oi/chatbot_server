@@ -46,8 +46,9 @@ alter table note_semestre add anne varchar(40);
 
 -- add etat to note semestre 
 alter table note_semestre add etat varchar(40);
+
 -- delete columns etat and anne from semstre
-ALTER TABLE semstre DROP COLUMN etet, DROP COLUMN anne;
+ALTER TABLE semstre DROP COLUMN etat, DROP COLUMN anne;
 -- delete etat from module
 alter table module drop etat;
 -- insert into semestre
