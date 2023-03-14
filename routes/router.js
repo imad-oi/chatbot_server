@@ -5,7 +5,8 @@ const PDFDocument = require('pdfkit-table');
 const {traiterRequette} = require('../controller/chatbotController');
 const {getSharedData} = require('../services/sharedData');
 const {getEtudiant}= require('../services/releverNotes');
-const {getNoteBySemestre}=require('../services/consulterNotes')
+const {getSemestre}= require('../services/releverNotes');
+//const {getNoteBySemestre}=require('../services/consulterNotes')
 
 
 // const middleWare = ( req , res , next)=>{
@@ -31,49 +32,14 @@ router.get('/download-pdf',  async (req, res) => {
   const dataShared = getSharedData() ; 
   console.log('datashared ',dataShared) ; 
   const etudiant  = await getEtudiant(code);
+  const semestreData  = await getSemestre(code,semestre);
   //il faut avoir ici un variable contien semestre
   // const code = process.env.CODE_APOGE ; 
 
-/*     let tableArray = {
-      headers: ["Module", "Moyenne Generale", "Barreme", "Resultat"],
-      rows: [
-        ["", "","",""],
-        ["", "","",""],
-        ["", "","",""],
-        ["", "","",""],
-        ["", "","",""],
-        ["", "","",""],
-      ],
-      align: 'center' ,
-    };
-
-    for (let i = 0; i < data.length; i++) {
-      const row = dataShared[i];
-      tableArray.rows[i + 1] = [row.nom_md, row.note, "/20","Valide" ];
-    }
-
-    //structure de pdf
-    let doc = new PDFDocument();
-
-    //const semestre = 'semestre 1' ; 
-    
-    doc.info.Title = 'Releve de notes  ';
-    doc.moveDown();
-    doc.text(`Releve de notes du ${semestre }`, {
-      width: 410,
-      align: 'center'
-    }
-);  
-    doc.moveDown();                             // separate tables
-    doc.table( tableArray, { width: 300 });     // A4 595.28 x 841.89 (portrait) (about width sizes)
-    doc.moveDown();                             // separate tables
-
-
- */
 
 
 
-    const noteSemestre =getNoteBySemestre(semestre,code);
+  /*   const noteSemestre =getNoteBySemestre(semestre,code); */
   
 //############################################ releve de note structure pdf ####################
  // create a new PDF document
@@ -87,7 +53,7 @@ router.get('/download-pdf',  async (req, res) => {
 
  // set the text to display inside the rectangle
  const rectText1 = 'UNIVERSTÉ CADI AYYAD';
- const rectText2 = 'ANNÉE UNVIVERSITAIRE - XXXX/XXXX';//anne apartir de table semestre
+ const rectText2 = 'ANNÉE UNVIVERSITAIRE - '+ semestreData.anne;//anne apartir de table semestre
 
 
  // let tableDenote = {
@@ -122,12 +88,12 @@ router.get('/download-pdf',  async (req, res) => {
     .text('RELEVÉ DE NOTE', rectPosX + 200, rectPosY + rectHeight + 50)
 
      .fontSize(10)
-    .text('NOM ET PRENOM :  '+ etudiant.nom + etudiant.prenom , rectPosX + 20, rectPosY + rectHeight + 80)// nom prenom
+    .text('NOM ET PRENOM : '+ etudiant.nom + ' '+etudiant.prenom , rectPosX + 20, rectPosY + rectHeight + 80)// nom prenom
 
-    .text('NUMERO APOGEÉ :'+etudiant.code_apoge, rectPosX + 20, rectPosY + rectHeight + 100) // apoge
-    .text('CNE :'+etudiant.cne, rectPosX + 20, rectPosY + rectHeight + 120) // cne 
-    .text('DATE DE NAISSANCE :'+etudiant.age, rectPosX + 20, rectPosY + rectHeight + 140) // date naissance 
-    .text('inscret au '+semestre+etudiant.filiere, rectPosX + 20, rectPosY + rectHeight + 180) // semestre 
+    .text('NUMERO APOGEÉ : '+etudiant.code_apoge, rectPosX + 20, rectPosY + rectHeight + 100) // apoge
+    .text('CNE : '+etudiant.cne, rectPosX + 20, rectPosY + rectHeight + 120) // cne 
+    .text('DATE DE NAISSANCE : '+etudiant.age, rectPosX + 20, rectPosY + rectHeight + 140) // date naissance 
+    .text('inscret au '+semestre+' '+etudiant.filiere, rectPosX + 20, rectPosY + rectHeight + 180) // semestre 
     .text('obtenu les notes suivantes :', rectPosX + 20, rectPosY + rectHeight + 200); 
 
 //############################################"table "#####################################################################################
@@ -170,29 +136,39 @@ for (let i = 0; i < numRows; i++) {
    doc.text(tableDenote[i][j], x + 5, y + 5);
  }
 }
-
-for (let i = 0; i < 2; i++) {   //rows
+for (let i = 0; i < 6; i++) {   //module
   for(let j = 0; j < 1; j++){
-    const row = dataShared[i];
-    tableDenote[i+1][j] = [row.nom_md];
+    /* const row = dataShared[i][j]; */
+    tableDenote[i+1][j] = dataShared[i][j];
+    console.log(dataShared[i][j]);
   }
 }
-for (let i = 0; i < 2; i++) {   //rows
+console.log(tableDenote);
+
+for (let i = 0; i < 6; i++) {   //note module
   for(let j = 1; j < 2; j++){
-    const row = dataShared[i];
-    tableDenote[i+1][j] = [row.note];
+    /* const row = dataShared[i]; */
+    tableDenote[i+1][j] = dataShared[i][j];
+    console.log(dataShared[i][j]);
+  }
+}
+for (let i = 0; i < 6; i++) {   //etat
+  for(let j = 2; j < 3; j++){
+    /* const row = dataShared[i]; */
+    tableDenote[i+1][j] = dataShared[i][j];
+    console.log(dataShared[i][j]);
   }
 }
 
 
  doc
    .text('RESULTAT', rectPosX + 20, 450)
-  //  .text( noteSemestre.note + '/ 20', rectPosX + 210, 450)// note semestre 
-   .text('valide', rectPosX + 400, 450);// etat
+   .text( semestreData.note + '/ 20', rectPosX + 210, 450)// note semestre 
+   .text(semestreData.etat, rectPosX + 400, 450);// etat
    //#######################
    doc.rect(421,477,40,16)
      .stroke()
-       .text('2023',430,482);
+       .text(semestreData.anne,430,482);
    //(x,y,w,h)
 //###########################################################################################################
   //  const imagePath = '/home/abdelfatah/Pictures/ucalogo.png';

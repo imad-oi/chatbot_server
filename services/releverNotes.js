@@ -27,7 +27,19 @@ async  function getEtudiant(code_apoge){
      });
     });
 }
+async  function getSemestre(code_apoge,semestre){
+  return new Promise((resolve, reject) => {
+    pool.query(`SELECT * from note_semestre where code_apoge='${code_apoge}' and nom_sm = '${smestre}'`, (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      else {
+        resolve(result[0]);
+      }
+     });
+    });
+}
 
 getEtudiant('1234567')
 
-  module.exports = {  getNoteAndModulesOfSemestre, getEtudiant  } ; 
+  module.exports = {  getNoteAndModulesOfSemestre, getEtudiant ,getSemestre } ; 

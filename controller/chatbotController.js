@@ -236,6 +236,12 @@ async function traiterRequette(req, res){
       else if(responseData.intent === 'ConsulterReleveDeNote') {
         console.table(responseData.entitiesArray) ; 
         const code = process.env.CODE_APOGE ;  const semestre = responseData.entitiesArray[0].value ;
+        if(code == undefined )
+        {
+          responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
+          res.send(responses) ; 
+          return -1 ;
+         }else{
         console.log('239', code , semestre ) ; 
         releverNote.getNoteAndModulesOfSemestre('1234567', 's1')
          .then((data)=>{
@@ -251,6 +257,7 @@ async function traiterRequette(req, res){
          res.setHeader('Content-Type', 'text/html');
          res.send(responses)
         }})
+      }
       }
       else{
                    // if nooo service is called 
