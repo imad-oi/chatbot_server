@@ -1,24 +1,67 @@
 const pool = require('../database');
 
-// function to execute the query with dynamic parameters
-async function getRowsByEntity(tableName, predicat) {
-    const query = `SELECT * FROM ${tableName} WHERE ${predicat} = ?`;
-    const [rows, fields] = await pool.query(query, [predicat]);
-    return rows;
+async  function getNoteBySemestre(semestre, code_apoge){
+  const code = code_apoge  ; 
+  const sm = semestre ;
+  return new Promise((resolve, reject) => {
+    pool.query(`SELECT note FROM note_semestre where code_apoge=${code} and nom_sm='${sm}'`, (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      else {
+        const rowDataPacket = result[0];
+        const note = rowDataPacket?.note;
+        resolve(note);
+      }
+     });
+    });
   }
 
-// example usage
-const entityName = 'pepperoni'; // assume this is the entity's name returned from Dialogflow
-const tableName = 'pizza'; // assume this is the table name corresponding to the entity
-getRowsByEntity(tableName, entityName)
-  .then((rows) => {
-    console.log(rows);
-    // do something with the query results
-  })
-  .catch((error) => {
-    console.error(error);
-    // handle the error
-  });
+  async  function getNoteByModule(module, code_apoge){
+    const code = code_apoge  ; const md = module ;
+    return new Promise((resolve, reject) => {
+      pool.query(`SELECT note FROM note_module where code_apoge=${code} and nom_md='${md}'`, (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        else {
+          const rowDataPacket = result[0];
+          const note = rowDataPacket?.note;
+          resolve(note);
+        }
+       });
+      });
+    }
 
 
-module.exports = { getRowsByEntity} ; 
+  async  function getAllSemestre(code_apoge){
+    const code = code_apoge  ;
+    return new Promise((resolve, reject) => {
+      pool.query(`SELECT nom_sm FROM note_semestre where code_apoge=${code}`, (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        else {
+          resolve(result);
+        }
+       });
+      });
+    }
+
+    async  function getAllModules(code_apoge){
+      const code = code_apoge  ;
+      return new Promise((resolve, reject) => {
+        pool.query(`SELECT nom_md FROM note_module where code_apoge=${code}`, (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          else {
+            resolve(result);
+          }
+         });
+        });
+      }
+  
+
+module.exports = {  getNoteByModule,getAllSemestre, getNoteBySemestre ,getAllModules} ; 
+
