@@ -13,7 +13,6 @@ async  function getNoteAndModulesOfSemestre(code_apoge, semestre){
      });
     });
 }
-// getNoteAndModulesOfSemestre('s1', '1234567');
 
 async  function getEtudiant(code_apoge){
   return new Promise((resolve, reject) => {
@@ -41,4 +40,29 @@ async  function getSemestre(code_apoge,semestre){
 }
 
 
-  module.exports = {  getNoteAndModulesOfSemestre, getEtudiant ,getSemestre } ; 
+
+
+
+
+async function insertIntoReleve(codeApoge, semestre ) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `insert into releve_note (date , code_apoge , semesstre) values (DATE_ADD(CURRENT_DATE, interval 0 day ), '${codeApoge}','${semestre}')`,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          const rowDataPacket = result;
+          resolve(rowDataPacket);
+        }
+      }
+    );
+  });
+}
+
+
+  module.exports = {  getNoteAndModulesOfSemestre, getEtudiant ,getSemestre ,
+    
+     insertIntoReleve 
+  
+  } ; 

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const router = require('./routes/router') ; 
 const path = require('path') ; 
 const PDFDocument = require('pdfkit');
+require('dotenv').config();
 
 const app = express() ; 
 app.use(cors());

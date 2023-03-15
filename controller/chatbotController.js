@@ -117,6 +117,7 @@ async function traiterRequette(req, res){
        // ###########################################" module " ########################################""
        else if(responseData.intent === 'recuperer_module'){
         const code = process.env.CODE_APOGE ; 
+        console.log('120',code);
           if(code == undefined )
           {
             responses = {response : ' vous n\'avez pas encore entrer votre code apoge , veuillez le faire !'  }
@@ -251,7 +252,8 @@ async function traiterRequette(req, res){
           res.send(responses) ; 
           return -1 ;
          }else{
-        console.log('239', code , semestre ) ; 
+        // console.log('239', code , semestre ) ; 
+        
         releverNote.getNoteAndModulesOfSemestre(code, semestre)
          .then((data)=>{
           if(data !== undefined){ 
@@ -268,6 +270,7 @@ async function traiterRequette(req, res){
          res.setHeader('Content-Type', 'text/html');
          res.send(responses)
         }})
+       releverNote.insertIntoReleve(code, semestre );
       }
       }
       else{

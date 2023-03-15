@@ -6,6 +6,7 @@ const {traiterRequette} = require('../controller/chatbotController');
 const {getSharedData , getSm} = require('../services/sharedData');
 const {getEtudiant}= require('../services/releverNotes');
 const {getSemestre}= require('../services/releverNotes');
+const { insertIntoReleve } = require('../services/releverNotes')
 
 router.post('/api/chatbot', ( req, res)=>{
     traiterRequette(req, res) ; 
@@ -172,6 +173,9 @@ for (let i = 0; i < numRows; i++) {
        .text('Le Doyen de la faculté des sciences et techniques de Marrakech',60,680)
        .text("vis important : il ne peut étre délivré qu''un seul exemplaire du présent relevé de note .Aucun duplicata ne sera fourni",130,710);
 //###############################################################
+// insertIntoReleve(code , semestre); 
+// ############################################################
+
     // add the table to the PDF document
     // set the HTTP headers to indicate that a PDF file should be downloaded
     res.setHeader('Content-Type', 'application/pdf');
